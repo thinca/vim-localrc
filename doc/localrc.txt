@@ -120,6 +120,9 @@ For example, in vimrc...
 ==============================================================================
 CHANGELOG					*localrc-changelog*
 
+x.x.x	xxxx-xx-xx
+	- Use "%" instead of "<afile>".
+
 0.1.0	2011-01-08
 	- Initial version.
 

@@ -23,13 +23,12 @@ endif
 
 augroup plugin-localrc  " {{{
   autocmd!
-  autocmd BufNewFile,BufReadPost *
-  \       call localrc#load(g:localrc_filename, expand('<afile>:p:h'))
+  autocmd BufNewFile,BufReadPost * call localrc#load(g:localrc_filename)
   autocmd FileType *
   \   call localrc#load(
   \     map(type(g:localrc_filetype) == type([]) ? copy(g:localrc_filetype)
   \                                              : [g:localrc_filetype],
-  \         'printf(v:val, expand("<amatch>"))'), expand('<afile>:p:h'))
+  \         'printf(v:val, expand("<amatch>"))'))
 augroup END  " }}}
 
 

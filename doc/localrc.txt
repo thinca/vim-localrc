@@ -93,7 +93,7 @@ g:localrc_filetype				*g:localrc_filetype*
 	THe name of configuration file for specific filetype.
 	"%s" is replaced by filetype.
 
-	default: ".local.%s.vimrc"
+	default: '/^\.local\..*\<%s\>.*\.vimrc$'
 
 
 
@@ -119,6 +119,9 @@ For example, in vimrc...
 
 ==============================================================================
 CHANGELOG					*localrc-changelog*
+
+x.x.x	xxxx-xx-xx
+	- Improved the default value of |g:localrc_filetype|.
 
 0.1.1	2011-01-17
 	- Use "%" instead of "<afile>".

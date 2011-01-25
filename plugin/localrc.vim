@@ -17,7 +17,7 @@ if !exists('g:localrc_filename')
 endif
 
 if !exists('g:localrc_filetype')
-  let g:localrc_filetype = '.local.%s.vimrc'
+  let g:localrc_filetype = '/^\.local\..*\<%s\>.*\.vimrc$'
 endif
 
 

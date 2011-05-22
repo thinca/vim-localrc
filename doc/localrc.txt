@@ -90,7 +90,7 @@ g:localrc_filename				*g:localrc_filename*
 	default: ".local.vimrc"
 
 g:localrc_filetype				*g:localrc_filetype*
-	THe name of configuration file for specific filetype.
+	The name of configuration file for specific filetype.
 	"%s" is replaced by filetype.
 
 	default: '/^\.local\..*\<%s\>.*\.vimrc$'

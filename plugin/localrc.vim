@@ -21,7 +21,7 @@ if !exists('g:localrc_filetype')
 endif
 
 
-augroup plugin-localrc  " {{{
+augroup plugin-localrc
   autocmd!
   autocmd BufNewFile,BufReadPost * call localrc#load(g:localrc_filename)
   autocmd FileType *
@@ -29,7 +29,7 @@ augroup plugin-localrc  " {{{
   \     map(type(g:localrc_filetype) == type([]) ? copy(g:localrc_filetype)
   \                                              : [g:localrc_filetype],
   \         'printf(v:val, expand("<amatch>"))'))
-augroup END  " }}}
+augroup END
 
 
 let &cpo = s:save_cpo

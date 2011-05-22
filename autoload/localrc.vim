@@ -8,7 +8,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-function! localrc#load(fnames, ...)  " {{{2
+function! localrc#load(fnames, ...)
   for file in localrc#search(a:fnames,
   \                          1 <= a:0 ? a:1 : expand('%:p:h'),
   \                          2 <= a:0 ? a:2 : -1)
@@ -17,7 +17,7 @@ function! localrc#load(fnames, ...)  " {{{2
   endfor
 endfunction
 
-function! localrc#search(fnames, ...)  " {{{2
+function! localrc#search(fnames, ...)
   let path = 1 <= a:0 ? a:1 : expand('%:p:h')
   if empty(a:fnames) || !isdirectory(path)
     return []
@@ -36,7 +36,7 @@ function! localrc#search(fnames, ...)  " {{{2
   return targets
 endfunction
 
-function! s:match_files(path, fname)  " {{{2
+function! s:match_files(path, fname)
   if type(a:fname) == type([])
     let files = []
     for f in a:fname
@@ -62,7 +62,7 @@ endfunction
 
 " - string only.
 " - can not treat a empty string.
-function! s:uniq(list) " {{{2
+function! s:uniq(list)
   let i = 0
   let len = len(a:list)
   let seen = {}

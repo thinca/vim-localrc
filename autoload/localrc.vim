@@ -31,6 +31,9 @@ function! localrc#search(fnames, ...)
     let targets = s:match_files(dir, a:fnames) + targets
     let updir = dir
     let dir = fnamemodify(dir, ':h')
+    if (has('win32') || has('win64')) && dir =~ '^\\\\[^\\]\+$'
+      break
+    endif
     let depth -= 1
   endwhile
   return targets

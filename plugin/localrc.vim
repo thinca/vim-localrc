@@ -23,8 +23,9 @@ endif
 
 augroup plugin-localrc
   autocmd!
-  autocmd BufNewFile,BufReadPost * call localrc#load(g:localrc_filename)
-  autocmd FileType *
+  autocmd BufNewFile,BufReadPost * nested
+  \   call localrc#load(g:localrc_filename)
+  autocmd FileType * nested
   \   call localrc#load(
   \     map(type(g:localrc_filetype) == type([]) ? copy(g:localrc_filetype)
   \                                              : [g:localrc_filetype],

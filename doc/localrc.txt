@@ -51,8 +51,8 @@ For example: >
 	   `- src/
 	      |- .local.vimrc	(3)
 	      `- main.c
-In this case, when main.c is loaded, the configuration files are loaded in order
-of the number.
+In this case, when main.c is loaded, the configuration files are loaded in
+order of the number.
 
 
 

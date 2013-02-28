@@ -35,8 +35,12 @@ USAGE						*localrc-usage*
 
 You can put a configuration file for the files below the certain directory.
 
-The configuration file is a Vim script of a decided file name like .vimrc.
+The configuration file is a Vim script of a decided file name like ".vimrc".
 The file name is specified by |g:localrc_filename|.
+
+The configuration file is loaded at the timing of |BufReadPost| and
+|BufNewFile|.  And, it is loaded also at the timing of |VimEnter| if you start
+Vim with no file.
 
 Configuration file applied only to a specific filetype can be put.  The file
 name is specified by |g:localrc_filetype|.

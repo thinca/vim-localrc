@@ -1,6 +1,6 @@
 *localrc.txt*	Enable configuration file of each directory.
 
-Version: 0.1.2
+Version: 0.2.0
 Author : thinca <thinca+vim@gmail.com>
 License: zlib License
 
@@ -122,6 +122,10 @@ For example, in vimrc...
 
 ==============================================================================
 CHANGELOG					*localrc-changelog*
+
+0.2.0	2013-02-28
+	- Use |autocmd-nested| for autocmds.
+	- Add |VimEnter| autocmd.
 
 0.1.2	2011-01-25
 	- Improved the default value of |g:localrc_filetype|.

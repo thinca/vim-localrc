@@ -39,11 +39,26 @@ The configuration file is a Vim script of a decided file name like ".vimrc".
 The file name is specified by |g:localrc_filename|.
 
 The configuration file is loaded at the timing of |BufReadPost| and
-|BufNewFile|.  And, it is loaded also at the timing of |VimEnter| if you start
-Vim with no file.
+|BufNewFile|, but before any |ftplugins|.  And, it is loaded also at the
+timing of |VimEnter| if you start Vim with no file.
 
-Configuration file applied only to a specific filetype can be put.  The file
-name is specified by |g:localrc_filetype|.
+Configuration can also be applied to a (set of) specific filetype(s).
+The file name is specified by |g:localrc_filetype|.  This depends on
+|:filetype-plugin-on|.
+Filetype-specific configuration is always executed _after_ the global
+configuration and _after_ ftplugins, so you can override global and filetype
+settings in there.  The filetype may have already been set during execution of
+the global configuration, but not when set manually or from a modeline, so
+it's advisable to use the specific configuration files instead of handling all
+filetypes in the global one, also to ensure the correct execution order:
+    vimrc -> global configuration -> ftplugins -> filetype-specific config
+
+For a compound filetype like "foo.bar", configuration for "foo", "bar", and
+"foo.bar" is searched.  (Please note that the default, dot-separated
+|g:localrc_filetype| pattern is not particularly well suited for exact matches
+of compound filetypes; you may want to switch to another delimiter if you have
+such advanced needs.)
+
 
 When two or more configuration files exist, it is sequentially loaded from a
 shallow hierarchy.

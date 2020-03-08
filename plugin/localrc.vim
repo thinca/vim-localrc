@@ -24,7 +24,7 @@ augroup plugin-localrc
   autocmd!
   autocmd VimEnter * nested
   \                  if argc() == 0
-  \                |   call localrc#load(g:localrc_filename)
+  \                |   call localrc#load(g:localrc_filename, getcwd())
   \                | endif
   autocmd BufNewFile,BufReadPost * nested
   \   call localrc#load(g:localrc_filename)

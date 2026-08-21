@@ -38,16 +38,15 @@ function! localrc#search(fnames, ...)
   return targets
 endfunction
 
-function! s:escape_glob_path(path)
-  let path = escape(a:path, ',*?')
-  if stridx(&isfname, '[') < 0
-    return path
-  endif
-  if has('win32')
-    return substitute(path, '\[', '[[]', 'g')
-  endif
-  return escape(path, '[')
-endfunction
+if has('win32')
+  function! s:escape_glob_path(path)
+    return substitute(a:path, '\[', '[[]', 'g')
+  endfunction
+else
+  function! s:escape_glob_path(path)
+    return escape(a:path, '\*?[]{},$`')
+  endfunction
+endif
 
 function! s:match_files(path, fname)
   if type(a:fname) == type([])

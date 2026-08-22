@@ -38,6 +38,16 @@ function! localrc#search(fnames, ...)
   return targets
 endfunction
 
+if has('win32')
+  function! s:escape_glob_path(path)
+    return escape(substitute(a:path, '\[', '[[]', 'g'), ',')
+  endfunction
+else
+  function! s:escape_glob_path(path)
+    return escape(a:path, '\*?[]{},$`')
+  endfunction
+endif
+
 function! s:match_files(path, fname)
   if type(a:fname) == type([])
     let files = []
@@ -47,7 +57,7 @@ function! s:match_files(path, fname)
     return s:uniq(files)
   endif
 
-  let path = escape(a:path, '*?[,')
+  let path = s:escape_glob_path(a:path)
   if a:fname[0] == '/'
     let files = split(globpath(path, '/.*', 1), "\n")
     \         + split(globpath(path, '/*' , 1), "\n")

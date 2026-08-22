@@ -40,7 +40,7 @@ endfunction
 
 if has('win32')
   function! s:escape_glob_path(path)
-    return substitute(a:path, '\[', '[[]', 'g')
+    return escape(substitute(a:path, '\[', '[[]', 'g'), ',')
   endfunction
 else
   function! s:escape_glob_path(path)

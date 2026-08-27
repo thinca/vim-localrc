@@ -81,6 +81,7 @@ function! s:uniq(list)
   while i < len
     if has_key(seen, a:list[i])
       call remove(a:list, i)
+      let len -= 1
     else
       let seen[a:list[i]] = 1
       let i += 1

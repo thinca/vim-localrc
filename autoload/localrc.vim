@@ -59,8 +59,8 @@ function! s:match_files(path, fname)
 
   let path = s:escape_glob_path(a:path)
   if a:fname[0] == '/'
-    let files = split(globpath(path, '/.*', 1), "\n")
-    \         + split(globpath(path, '/*' , 1), "\n")
+    let files = split(globpath(path, '.*', 1), "\n")
+    \         + split(globpath(path, '*' , 1), "\n")
     let pat = a:fname[1:]
     call filter(map(files, 'fnamemodify(v:val, ":t")'), 'v:val =~# pat')
 

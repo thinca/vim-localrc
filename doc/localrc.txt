@@ -23,7 +23,7 @@ INTRODUCTION					*localrc-introduction*
 
 
 Requirements:
-- Vim 7.2 or later
+- Vim 9.2 or later
 
 Latest version:
 https://github.com/thinca/vim-localrc

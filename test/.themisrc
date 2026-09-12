@@ -1,0 +1,28 @@
+call themis#option('recursive', 1)
+call themis#helper('command').with(themis#helper('assert'))
+
+function TempTree(files) abort
+  let root = tempname()
+  for name in sort(keys(a:files))
+    let path = root . '/' . name
+    if name =~# '/$'
+      call mkdir(path, 'p')
+    else
+      call mkdir(fnamemodify(path, ':h'), 'p')
+      call writefile(a:files[name], path)
+    endif
+  endfor
+  return fnamemodify(NormalizePath(root), ':h')
+endfunction
+
+function LogScript() abort
+  return ['call add(g:localrc_test_log, NormalizePath(expand("<sfile>")))']
+endfunction
+
+function NormalizePath(path) abort
+  return fnamemodify(resolve(a:path), ':p:gs?\\\+?/?')
+endfunction
+
+function NormalizePaths(paths) abort
+  return map(copy(a:paths), 'NormalizePath(v:val)')
+endfunction

@@ -1,0 +1,63 @@
+Describe localrc#load()
+  Before all
+    let root = TempTree({
+    \   '.test.vimrc': LogScript(),
+    \   'project/.test.vimrc': LogScript(),
+    \   'project/src/main.vim': [],
+    \ })
+  End
+
+  After all
+    call delete(root, 'rf')
+  End
+
+  Before each
+    let g:localrc_test_log = []
+  End
+
+  After each
+    unlet! g:localrc_test_log
+  End
+
+  It sources the found files in order from a shallow hierarchy
+    call localrc#load('.test.vimrc', root .. '/project/src')
+    Assert Equals(
+    \   NormalizePaths(g:localrc_test_log),
+    \   [
+    \     root .. '/.test.vimrc',
+    \     root .. '/project/.test.vimrc',
+    \   ]
+    \ )
+  End
+
+  It limits the hierarchies to search by the depth
+    call localrc#load('.test.vimrc', root .. '/project/src', 2)
+    Assert Equals(
+    \   NormalizePaths(g:localrc_test_log),
+    \   [root .. '/project/.test.vimrc']
+    \ )
+  End
+
+  It does nothing when no file is found
+    call localrc#load('.not-exist.vimrc', root .. '/project/src')
+    Assert Equals(g:localrc_test_log, [])
+  End
+
+  Context when the path is omitted
+    After each
+      bwipeout!
+    End
+
+    It sources the files for the directory of the current buffer
+      execute 'noautocmd edit' fnameescape(root .. '/project/src/main.vim')
+      call localrc#load('.test.vimrc')
+      Assert Equals(
+      \   NormalizePaths(g:localrc_test_log),
+      \   [
+      \     root .. '/.test.vimrc',
+      \     root .. '/project/.test.vimrc',
+      \   ]
+      \ )
+    End
+  End
+End

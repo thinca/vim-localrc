@@ -1,0 +1,58 @@
+Describe autocmd
+  Before all
+    let root = TempTree({
+    \   '.test.vimrc': LogScript(),
+    \   '.test.vim.vimrc': LogScript(),
+    \   'main.vim': [],
+    \ })
+    let saved_filename = g:localrc_filename
+    let saved_filetype = g:localrc_filetype
+    let g:localrc_filename = '.test.vimrc'
+    let g:localrc_filetype = '/^\.test\..*\<%s\>.*\.vimrc$'
+  End
+
+  After all
+    let g:localrc_filename = saved_filename
+    let g:localrc_filetype = saved_filetype
+    call delete(root, 'rf')
+  End
+
+  Before each
+    let g:localrc_test_log = []
+    let orig_bufnr = bufnr('%')
+  End
+
+  After each
+    if bufnr('%') != orig_bufnr
+      bwipeout!
+    endif
+    unlet! g:localrc_test_log
+  End
+
+  It loads the local vimrc when an existing file is opened
+    execute 'edit' fnameescape(root .. '/main.vim')
+    Assert Equals(NormalizePaths(g:localrc_test_log), [root .. '/.test.vimrc'])
+  End
+
+  It loads the local vimrc when a new file is opened
+    execute 'edit' fnameescape(root .. '/new-file.vim')
+    Assert Equals(NormalizePaths(g:localrc_test_log), [root .. '/.test.vimrc'])
+  End
+
+  It loads the local vimrc for the filetype when the filetype is set
+    execute 'noautocmd edit' fnameescape(root .. '/main.vim')
+    set filetype=vim
+    Assert Equals(NormalizePaths(g:localrc_test_log), [root .. '/.test.vim.vimrc'])
+  End
+
+  It loads the local vimrc of the current directory when Vim starts with no file
+    let saved_cwd = getcwd()
+    try
+      execute 'noautocmd lcd' fnameescape(root)
+      doautocmd plugin-localrc VimEnter
+      Assert Equals(NormalizePaths(g:localrc_test_log), [root .. '/.test.vimrc'])
+    finally
+      execute 'noautocmd lcd' fnameescape(saved_cwd)
+    endtry
+  End
+End

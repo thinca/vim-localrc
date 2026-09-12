@@ -1,0 +1,147 @@
+Describe localrc#search()
+  Before all
+    let root = TempTree({
+    \   '.test.vimrc': [],
+    \   '.test.vim.vimrc': [],
+    \   'project/.test.vimrc': [],
+    \   'project/note.txt': [],
+    \   'project/src/main.vim': [],
+    \   'project/src/.test.vimrc/': [],
+    \ })
+  End
+
+  After all
+    call delete(root, 'rf')
+  End
+
+  It returns an empty List when the file names are empty
+    Assert Equals(localrc#search('', root), [])
+    Assert Equals(localrc#search([], root), [])
+  End
+
+  It returns an empty List when the path is not a directory
+    Assert Equals(localrc#search('.test.vimrc', root .. '/not-exist'), [])
+    Assert Equals(localrc#search('.test.vimrc', root .. '/project/note.txt'), [])
+  End
+
+  It returns an empty List when no file matches
+    Assert Equals(localrc#search('.not-exist.vimrc', root), [])
+  End
+
+  It returns the files in the specified directory
+    Assert Equals(
+    \   NormalizePaths(localrc#search('.test.vimrc', root, 1)),
+    \   [root .. '/.test.vimrc']
+    \ )
+  End
+
+  It returns the files of the ancestor directories in order from a shallow hierarchy
+    Assert Equals(
+    \   NormalizePaths(localrc#search('.test.vimrc', root .. '/project/src')),
+    \   [
+    \     root .. '/.test.vimrc',
+    \     root .. '/project/.test.vimrc',
+    \   ]
+    \ )
+  End
+
+  It limits the hierarchies to search by the depth
+    Assert Equals(
+    \   NormalizePaths(localrc#search('.test.vimrc', root .. '/project/src', 2)),
+    \   [root .. '/project/.test.vimrc']
+    \ )
+    Assert Equals(
+    \   NormalizePaths(localrc#search('.test.vimrc', root .. '/project/src', 3)),
+    \   [
+    \     root .. '/.test.vimrc',
+    \     root .. '/project/.test.vimrc',
+    \   ]
+    \ )
+  End
+
+  It ignores a directory that has a matched name
+    Assert Equals(localrc#search('.test.vimrc', root .. '/project/src', 1), [])
+  End
+
+  It can use wildcards for the file names
+    Assert Equals(
+    \   NormalizePaths(localrc#search('.test.*.vimrc', root, 1)),
+    \   [root .. '/.test.vim.vimrc']
+    \ )
+  End
+
+  It treats the file name as a regular expression when it starts with "/"
+    Assert Equals(
+    \   NormalizePaths(localrc#search('/^\.test\..*\<vim\>.*\.vimrc$', root, 1)),
+    \   [root .. '/.test.vim.vimrc']
+    \ )
+  End
+
+  It accepts a List of the file names
+    Assert Equals(
+    \   NormalizePaths(localrc#search(['.test.vim.vimrc', '.test.vimrc'], root, 1)),
+    \   [
+    \     root .. '/.test.vim.vimrc',
+    \     root .. '/.test.vimrc',
+    \   ]
+    \ )
+  End
+
+  It removes the duplicated files
+    Assert Equals(
+    \   NormalizePaths(localrc#search(['.test.vimrc', '.test.*', '.test.*.vimrc'], root, 1)),
+    \   [
+    \     root .. '/.test.vimrc',
+    \     root .. '/.test.vim.vimrc',
+    \   ]
+    \ )
+  End
+
+  Context when the path is omitted
+    After each
+      bwipeout!
+    End
+
+    It searches from the directory of the current buffer
+      execute 'noautocmd edit' fnameescape(root .. '/project/src/main.vim')
+      Assert Equals(
+      \   NormalizePaths(localrc#search('.test.vimrc')),
+      \   [
+      \     root .. '/.test.vimrc',
+      \     root .. '/project/.test.vimrc',
+      \   ]
+      \ )
+    End
+  End
+
+  Context with a path that contains special characters
+    It finds the files in a directory named with glob characters
+      let dir = 'glob[a],b'
+      let special_root = TempTree({dir .. '/.test.vimrc': []})
+      try
+        Assert Equals(
+        \   NormalizePaths(localrc#search('.test.vimrc', special_root .. '/' .. dir, 1)),
+        \   [special_root .. '/' .. dir .. '/.test.vimrc']
+        \ )
+      finally
+        call delete(special_root, 'rf')
+      endtry
+    End
+
+    It finds the files in a directory named with characters that are invalid on Windows
+      if has('win32') || has('win64')
+        Skip Such a directory can not be made on Windows
+      endif
+      let dir = 'glob*a?b{c}d$e`f''g\h'
+      let special_root = TempTree({dir .. '/.test.vimrc': []})
+      try
+        Assert Equals(
+        \   localrc#search('.test.vimrc', special_root .. '/' .. dir, 1),
+        \   [special_root .. '/' .. dir .. '/.test.vimrc']
+        \ )
+      finally
+        call delete(special_root, 'rf')
+      endtry
+    End
+  End
+End
